@@ -1,13 +1,3 @@
-#!/bin/bash
-
-# Create a new RSA key pair with the specified name and number of bits
-ssh-keygen -t rsa -b 4096 -f school
-
-# Add a passphrase to the private key for additional security
-ssh-keygen -p -P "" -N "betty" -f school
-
-# Display the fingerprint and randomart image of the key
-ssh-keygen -lf school
-
-# Move the private and public key files to the current directory
-mv school school.pub .
+#!/usr/bin/env bash
+# Creates an RSA SSH key pair
+ssh-keygen -f school -b 4096 -N betty
