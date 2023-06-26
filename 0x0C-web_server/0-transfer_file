@@ -1,18 +1,9 @@
 #!/usr/bin/env bash
-# Transfers a file from our client to a server
-#
-# variables
-path="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-filename=$(basename "$BASH_SOURCE")
-brown='\e[0;33m'
-reset='\033[0m'
-file="$1"
-ip="$2"
-user="$3"
-key="$4"
-
-if [ $# -eq 4 ]; then
-	scp -i "$key" -o StrictHostKeyChecking=no "$path"/"$file" "$user"@"$ip":/home/"$user"/
-else
-	echo -e "Usage: ${brown}$filename PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY${reset}"
-fi
+#Install nginx on your web-01 server
+#Nginx should be listening on port 80
+#When querying Nginx at its root / with a GET request (requesting a page)
+# using curl, it must return a page that contains the string Hello World!
+apt-get update
+apt-get install -y nginx
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
+service nginx restart
