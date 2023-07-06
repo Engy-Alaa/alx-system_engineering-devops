@@ -1,25 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Usage: ./1-world_wide_web <domain> <subdomain>
+# Display information about subdomains.
 
-function audit_subdomain() {
-    local domain=$1
-    local subdomain=$2
-
-    if [ -z "$subdomain" ]; then
-        subdomains=(www lb-01 web-01 web-02)
+domain_information() {
+    local line=$(dig "$2"."$1" | awk '/ANSWER SECTION/ {getline; print}')
+    if [ -z "$line" ]; then
+        echo "No destination found for subdomain $2"
     else
-        subdomains=("$subdomain")
+        local record_type=$(echo "$line" | awk '{print $1}')
+        local destination=$(echo "$line" | awk '{print $NF}')
+        echo "The subdomain $2 is a $record_type record and points to $destination"
     fi
-
-    for sub in "${subdomains[@]}"; do
-        record_type=$(dig +short $sub.$domain | awk 'NR==1{print $1}')
-        destination=$(dig +short $sub.$domain | awk 'NR==1{print $2}')
-
-        if [ -z "$destination" ]; then
-            echo "No destination found for subdomain $sub"
-        else
-            echo "The subdomain $sub is a $record_type record and points to $destination"
-        fi
-    done
 }
 
-audit_subdomain "$1" "$2"
+if [ "$#" == 1 ]
+then
+  domain_information "$1" "www"
+  domain_information "$1" "lb-01"
+  domain_information "$1" "web-01"
+  domain_information "$1" "web-02"
+elif [ "$#" == 2 ]
+then
+  domain_information "$1" "$2"
+fi
